@@ -372,7 +372,6 @@ class DetectionComparator:
         # 匹配检测结果
         matched_old = []
         matched_new = []
-        matches = []
         
         # 优先匹配同一类别的检测
         for i, old_det in enumerate(old_detections):
@@ -440,7 +439,12 @@ class DetectionComparator:
             f.write("-" * 40 + "\n")
             f.write(f"旧图像检测总数: {comparison['summary']['old_total']}\n")
             f.write(f"新图像检测总数: {comparison['summary']['new_total']}\n")
-            f.write(f"总变化数量: {comparison['summary']['total_difference']:+\n}")
+            
+            # 修复这里：正确的格式化方式
+            total_diff = comparison['summary']['total_difference']
+            diff_sign = '+' if total_diff > 0 else ''
+            f.write(f"总变化数量: {diff_sign}{total_diff}\n")
+            
             f.write(f"新增目标: {len(comparison['added'])} 个\n")
             f.write(f"消失目标: {len(comparison['removed'])} 个\n")
             f.write(f"移动目标: {len(comparison['moved'])} 个\n")
@@ -679,7 +683,7 @@ def process_images_pipeline(
         save_detections_json(new_detections, new_json_path)
     
     # 保存检测结果图像
-    if save_images:
+    if save_images and old_preprocessed is not None and new_preprocessed is not None:
         print("   保存带检测框的图像...")
         
         # 绘制检测框
@@ -761,7 +765,7 @@ def main():
                        help="滑动窗口大小 (默认: 512)")
     parser.add_argument("--stride", "-s", type=int,
                        default=256,
-                       help="滑动步长 (默认: 256，50%%重叠)")
+                       help="滑动步长 (默认: 256，50%重叠)")
     parser.add_argument("--ignore-top", "-it", type=int,
                        default=700,
                        help="忽略顶部像素数 (默认: 700)")
