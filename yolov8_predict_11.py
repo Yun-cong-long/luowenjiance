@@ -3,11 +3,12 @@ import cv2
 import numpy as np
 import os
 from tqdm import tqdm
+from image_utils import process_image_pipeline
 
 # ===================== 1. 核心配置（所有可调整参数都在这里！） =====================
 # ---------------------- 模型/文件路径 ----------------------
 MODEL_PATH = "./best.pt"  # 模型绝对路径
-LARGE_IMG_PATH = "../01_recombined.bmp"  # 超大图路径
+# LARGE_IMG_PATH = "../01_recombined.bmp"  # 超大图路径
 OUTPUT_DIR = "./jiance_output"  # 结果保存路径
 
 # ---------------------- 分割参数 ----------------------
@@ -15,13 +16,15 @@ CROP_SIZE = 512  # 小图尺寸（宽/高）
 OVERLAP = 256    # 小图重叠像素（左右+上下都生效）
 SKIP_TOP_ROWS = 700  # 跳过图片顶部的行数（不需要处理的像素行，设0则不跳过）
 CONF_THRESHOLD = 0.2  # 检测置信度阈值
-IOU_THRESHOLD = 0.9   # NMS去重的IoU阈值
+IOU_THRESHOLD = 0.95   # NMS去重的IoU阈值
 
 # ===================== 2. 初始化模型和文件夹 =====================
 # 加载模型
 model = YOLO(MODEL_PATH)
 # 创建结果文件夹
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+# 原始图片预处理（卡口位置）
+_,LARGE_IMG_PATH=process_image_pipeline(input_image_path="../luowen/L219/04.bmp", template_path="./moban/01_moban.bmp")
 # 读取超大图
 img = cv2.imread(LARGE_IMG_PATH)
 if img is None:

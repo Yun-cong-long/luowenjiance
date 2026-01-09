@@ -1,0 +1,19 @@
+# config.yaml
+detection:
+  model_path: "best.pt"  # YOLOv8模型路径
+  window_size: 512       # 滑动窗口大小
+  stride: 256           # 滑动步长（重叠50%）
+  ignore_top: 700       # 忽略顶部像素
+  conf_threshold: 0.25  # 置信度阈值
+  iou_threshold: 0.45   # IoU阈值
+  
+preprocessing:
+  template_path: "./moban/01_moban.bmp"
+  compression_ratio: 6.25
+  match_threshold: 0.8
+  
+output:
+  output_dir: "./detection_results"
+  save_images: true
+  save_report: true
+  draw_match: false
